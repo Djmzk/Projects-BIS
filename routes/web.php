@@ -33,7 +33,9 @@ Route::resource('categories', CategoryController::class);
 // Rute untuk Postingan
 Route::resource('posts', PostController::class);
 });
+
 Route::get('/berita', [PostController::class, 'postingan'])->name('postingan');
-Route::get('/posts/{id}', [PostController::class, 'show'])->name('post.show');
+Route::get('/berita/{id}', [PostController::class, 'detail'])->name('berita.detail');
+Route::get('/berita}', [CategoryController::class, 'loadCategoryNews'])->name('load.category');
 
 require __DIR__.'/auth.php';
