@@ -11,7 +11,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" href="/admin/home">
+        <a class="nav-link" href="{{'dashboard'}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
@@ -39,6 +39,27 @@
             </div>
         </div>
     </li>
+    <li class="nav-item active">
+        <a class="nav-link" href="#" onclick="confirmLogout()">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+
+        <script>
+            function confirmLogout() {
+                if (confirm('Apakah Anda yakin ingin logout?')) {
+                    document.getElementById('logout-form').submit();
+                }
+            }
+        </script>
+    </li>
+
+
+
+
 
 </ul>
 <!-- End of Sidebar -->

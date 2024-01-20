@@ -19,7 +19,7 @@ class PostController extends Controller
 
 public function index()
 {
-    $posts = Post::latest()->paginate(5);
+    $posts = Post::latest()->paginate(20);
     $categories = Category::all(); // Mengambil semua kategori
 
     return view('admin.postingan.index', compact('posts', 'categories'));
@@ -68,20 +68,29 @@ public function index()
      * @param  string  $id
      * @return View
      */
-    public function recomendedpost()
-{
-    $posts = Post::latest()->paginate(5);
-    $categories = Category::all(); // Mengambil semua kategori
+//     public function recomendedpost()
+// {
+//     $posts = Post::latest()->paginate(5);
+//     $recomendedPosts = Post::where('category_id', $posts->category_id)
+//     ->where('id', '<>', $posts->id)
+//     ->latest()
+//     ->take(3) // Mengambil 3 post rekomendasi
+//     ->paginate(3); // Menyesuaikan dengan jumlah yang ditampilkan di tampilan
 
-    return view('showposts', compact('posts', 'categories'));
-}
+//     return view('showposts', compact('posts', 'categories'));
+// }
 
-public function show(string $id): View
+
+public function detail(string $id): View
 {
     $post = Post::findOrFail($id);
 
     // Ambil data rekomendasi berita lainnya
-    $rekomendasiBerita = Post::where('id', '!=', $id)->inRandomOrder()->limit(3)->get();
+    $rekomendasiBerita = Post::where('category_id', $post->category_id)
+    ->where('id', '<>', $post->id)
+    ->latest()
+    ->take(6) // Mengambil 3 post rekomendasi
+    ->paginate(6); // Menyesuaikan dengan jumlah yang ditampilkan di tampilan
 
     // Kirim data ke view
     return view('showposts', compact('post', 'rekomendasiBerita'));
@@ -98,7 +107,8 @@ public function show(string $id): View
     public function edit(string $id): View
     {
         $post = Post::findOrFail($id);
-        return view('posts.edit', compact('post'));
+        $categories = Category::all(); // Mengambil semua kategori
+        return view('admin.postingan.edit', compact('post','categories' ));
     }
 
     /**
@@ -159,8 +169,9 @@ public function show(string $id): View
     public function postingan()
 {
     $posts = Post::latest()->paginate(5);
+    $new = Post::inRandomOrder()->paginate(8);
     $categories = Category::all(); // Mengambil semua kategori
 
-    return view('berita', compact('posts', 'categories'));
+    return view('berita', compact('posts', 'new','categories'));
 }
 }

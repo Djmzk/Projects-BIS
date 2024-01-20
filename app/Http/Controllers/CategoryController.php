@@ -3,8 +3,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Post;
 
 class CategoryController extends Controller
 {
@@ -13,6 +15,25 @@ class CategoryController extends Controller
         $categories = Category::all();
         return view('admin.kategori.index', compact('categories'));
     }
+
+
+
+    public function loadCategoryNews(Request $request)
+    {
+        $categories = Category::all(); // Ambil semua kategori
+        $selectedCategoryId = $request->input('category', 'all');
+
+        $posts = Post::latest();
+
+        if ($selectedCategoryId != 'all') {
+            $posts->where('category_id', $selectedCategoryId);
+        }
+
+        $posts = $posts->get();
+
+        return view('berita', compact('posts', 'categories', 'selectedCategoryId'));
+    }
+
 
     public function create()
     {
@@ -34,14 +55,14 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        return view('categories.edit', compact('category'));
+        return view('admin.kategori.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
     {
         $request->validate([
             'name' => 'required|max:255',
-            'slug' => 'required|max:255',
+
         ]);
 
         $category->update($request->all());
@@ -58,4 +79,3 @@ class CategoryController extends Controller
             ->with('success', 'Category deleted successfully');
     }
 }
-
